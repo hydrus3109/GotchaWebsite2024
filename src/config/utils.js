@@ -105,12 +105,12 @@ export const tagOut = async (email) => {
     const answer = window.confirm("Are you sure you want to tag out?");
 
     if (answer) {
+      const fullName = userData.firstName + " " + userData.lastName;
       await submitLastWords(email, fullName, lastWords);
 
       await setDoc(user.userRef, userData);
       await setDoc(chaser.userRef, chaserData);
 
-      const fullName = userData.firstName + " " + userData.lastName;
 
       alert("You have been tagged out.");
     } else {
