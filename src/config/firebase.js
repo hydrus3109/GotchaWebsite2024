@@ -16,8 +16,8 @@ const firebaseConfig = {
   projectId: "gotcha-b4b13",
   storageBucket: "gotcha-b4b13.appspot.com",
   messagingSenderId: "628191290317",
-  appId: "1:628191290317:web:630903a8d98f8cc19e9a84",
-  measurementId: "G-LG5MKGL41Y",
+  appId: "1:628191290317:web:60366a8e1e1b879a9e9a84",
+  measurementId: "G-MRTCXHSQDK"
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
