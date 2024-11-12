@@ -10,6 +10,8 @@ function StatsPage() {
   const [stableStats, setStableStats] = useState({});
   const [numberAlive, setNumberAlive] = useState(0);
 
+  // fix firebase error: quota exceeded
+
   useEffect(() => {
     async function fetchData() {
       const { sortedUsers, stableTags, dormTags, numAlive } = await getUsers();
@@ -34,7 +36,7 @@ function StatsPage() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = new Date().getTime();
-      const targetDate = new Date("January 30, 2024 15:30:00").getTime();
+      const targetDate = new Date("November 18, 2024 08:00:00").getTime();
       const distance = targetDate - now;
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
       const hours = Math.floor(
@@ -42,7 +44,7 @@ function StatsPage() {
       );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     }, 1000);
     return () => clearInterval(intervalId);
   }, []);
