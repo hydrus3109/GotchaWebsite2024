@@ -1,13 +1,12 @@
 // bryan sukidi
 
-import { auth, db } from "./firebase";
+import { db } from "./firebase";
 import {
   doc,
   getDoc,
   getDocs,
   setDoc,
   collection,
-  addDoc,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -158,7 +157,7 @@ export const getUsers = async () => {
     allUsers = shuffle(allUsers);
 
     const aliveUsers = allUsers.filter((user) => user.alive);
-    const sortedUsers = aliveUsers
+    const sortedUsers = allUsers
       .slice()
       .sort((a, b) => {
         if (b.tags !== a.tags) {
