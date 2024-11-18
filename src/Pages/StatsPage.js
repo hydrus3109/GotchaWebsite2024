@@ -7,18 +7,18 @@ import fireGif from "../Assets/Remove Background.gif";
 function StatsPage() {
   const [leaderBoard, setLeaderBoard] = useState([]);
   const [dormStats, setDormStats] = useState({});
-  const [stableStats, setStableStats] = useState({});
+  const [ClassStats, setClassStats] = useState({});
   const [numberAlive, setNumberAlive] = useState(0);
 
   // fix firebase error: quota exceeded
 
   useEffect(() => {
     async function fetchData() {
-      const { sortedUsers, stableTags, dormTags, numAlive } = await getUsers();
+      const { sortedUsers, classTags, dormTags, numAlive } = await getUsers();
 
       setLeaderBoard(sortedUsers);
       setDormStats(dormTags);
-      setStableStats(stableTags);
+      setClassStats(classTags);
       setNumberAlive(numAlive);
 
       console.log("fetching data");
@@ -65,23 +65,14 @@ function StatsPage() {
                       <h3
                         style={{
                           color: entry.alive
-                            ? {
-                                blue: "#4e79d1",
-                                green: "#59a14f",
-                                orange: "#e69f00",
-                                pink: "#ff9da7",
-                                purple: "#6e34eb",
-                                red: "#eb3449",
-                              }[entry.stable]
+                            ? "var(--primary-color)"
                             : "var(--secondary-color",
                         }}
                       >
-                        {entry.firstName} {entry.lastName}
-                        {entry.alive ? "" : " 💀"}
+                        {entry.firstName} {entry.lastName} {entry.alive ? '' : ' (Dead)'}
                       </h3>
                       <p>
-                        {toTitleCase(entry.class)} - {toTitleCase(entry.dorm)} -{" "}
-                        {toTitleCase(entry.stable)} Stable{" "}
+                        {toTitleCase(entry.class)} - {toTitleCase(entry.dorm)} 
                       </p>
                     </div>
                   </div>
@@ -124,10 +115,10 @@ function StatsPage() {
           </div>
 
           <div className="row-2">
-            <h1>Stables</h1>
-            <div className="stables">
-              {Object.entries(stableStats).map(([stable, tags]) => (
-                <div key={stable} className="dorm">
+            <h1>Classes</h1>
+            <div className="class">
+              {Object.entries(ClassStats).map(([class1, tags]) => (
+                <div key={class1} className="dorm">
                   <h3
                     style={{
                       color: {
@@ -137,12 +128,12 @@ function StatsPage() {
                         pink: "#ff9da7",
                         purple: "#6e34eb",
                         red: "#eb3449",
-                      }[stable],
+                      }[class1],
                     }}
                   >
-                    {toTitleCase(stable)}
+                    {toTitleCase(class1)}
                   </h3>
-                  <p>Total Stable Tags: {tags}</p>
+                  <p>Total Class Tags: {tags}</p>
                 </div>
               ))}
             </div>

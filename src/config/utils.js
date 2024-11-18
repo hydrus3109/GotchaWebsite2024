@@ -73,10 +73,28 @@ export const tagOut = async (email) => {
     const user = await fetchUserDocByEmail(email);
     const userData = user.userData;
 
-    // If the user is already out, return
+    // If the user is already out, either get last names or return
     if (userData.alive === false) {
-      alert("You are already out!");
-      return;
+      if (userData.lastWords == "") {
+        let lastWords = prompt("Please type in your last words");
+        if (lastWords === null || lastWords === undefined || lastWords === "") {
+          alert("Please type your last words and try again.");
+          return;
+        }
+  
+        //reupdate user data with last words
+        const fullName = userData.firstName + " " + userData.lastName;
+        await submitLastWords(email, fullName, lastWords);
+        userData.lastWords = lastWords;
+        await setDoc(user.userRef, userData);
+        alert("Your last words have been entered.");
+        return;
+      }
+      else{
+        alert("You are already out!");
+        return;
+      }
+
     }
 
     // Get the user's chaser
@@ -86,35 +104,37 @@ export const tagOut = async (email) => {
     const target = await fetchUserDocByEmail(userData.target);
     const targetData = target.userData;
 
-    // Get the user's last words
-    let lastWords = prompt("Please type in your last words to tag out:");
-
-    if (lastWords === null || lastWords === undefined || lastWords === "") {
-      alert("Please type your last words and try again.");
-      return;
-    }
+   
     // Update necessary fields
     userData.alive = false;
     chaserData.tags += 1;
     chaserData.target = userData.target;
-    userData.lastWords = lastWords;
     targetData.chaser = userData.chaser;
-    // Post changes to database
 
+    // Post changes to database
     const answer = window.confirm("Are you sure you want to tag out?");
 
     if (answer) {
-      const fullName = userData.firstName + " " + userData.lastName;
-      await submitLastWords(email, fullName, lastWords);
-
       await setDoc(user.userRef, userData);
       await setDoc(chaser.userRef, chaserData);
+      // Get the user's last words
+      let lastWords = prompt("Please type in your last words");
+      if (lastWords === null || lastWords === undefined || lastWords === "") {
+        alert("Please type your last words and try again.");
+        return;
+      }
 
+      //reupdate user data with last words
+      const fullName = userData.firstName + " " + userData.lastName;
+      await submitLastWords(email, fullName, lastWords);
+      userData.lastWords = lastWords;
+      await setDoc(user.userRef, userData);
 
       alert("You have been tagged out.");
     } else {
       alert("Cancelled.");
     }
+
   } catch (error) {
     alert(error.message);
     console.log(error);
@@ -157,7 +177,7 @@ export const getUsers = async () => {
     allUsers = shuffle(allUsers);
 
     const aliveUsers = allUsers.filter((user) => user.alive);
-    const sortedUsers = allUsers
+    const sortedUsers = aliveUsers
       .slice()
       .sort((a, b) => {
         if (b.tags !== a.tags) {
@@ -170,10 +190,11 @@ export const getUsers = async () => {
 
     
 
-    const stableTags = allUsers.reduce((acc, user) => {
-      const stable = user.stable;
+    const classTags = allUsers.reduce((acc, user) => {
+      const class1 = user.class;
       const tags = user.tags;
-      acc[stable] = (acc[stable] || 0) + tags;
+      acc[class1] = (acc[class1] || 0) + tags;
+      console.log(acc);
       return acc;
     }, {});
 
@@ -210,7 +231,7 @@ export const getUsers = async () => {
 
     const numAlive = aliveUsers.length;
 
-    return { allUsers, sortedUsers, stableTags, dormTags, numAlive };
+    return { allUsers, sortedUsers, classTags, dormTags, numAlive };
   } catch (error) {
     console.log(error);
   }
